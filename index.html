@@ -3,83 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SettleUp AI | Smart Expense Manager</title>
+    <meta name="description" content="A professional split expense manager with auto-settle logic. Designed for groups to simplify debts with minimum transactions.">
     
-    <!-- Primary SEO Tags -->
-    <title>Chanshu | Android Developer & Tech Content Creator</title>
-    <meta name="description" content="Official portfolio of Chanshu, an Android Developer based in Bengaluru. Specializing in Jetpack Compose, Kotlin, and AI integration. Creator of Exam Tantra.">
-    <meta name="keywords" content="Chanshu, Android Developer, Jetpack Compose, Kotlin Developer India, Exam Tantra App, Chanshu The Coder, Bengaluru Developer">
-    <link rel="canonical" href="https://chanshu.github.io/" />
-
-    <!-- Open Graph (For Social Media Sharing) -->
-    <meta property="og:title" content="Chanshu | Android Developer Portfolio">
-    <meta property="og:description" content="Exploring the intersection of Android Development and AI. Check out my latest projects and vlogs.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://chanshu.github.io/">
-
-    <!-- Simple Modern CSS -->
     <style>
-        :root { --primary: #3d5afe; --dark: #1a1a1a; --light: #f4f4f4; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; color: var(--dark); background: var(--light); }
-        header { background: var(--primary); color: white; padding: 2rem 1rem; text-align: center; }
-        .container { max-width: 800px; margin: auto; padding: 2rem; }
-        .card { background: white; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1, h2 { margin-top: 0; }
-        .tag { background: #e0e0e0; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; }
-        .btn { display: inline-block; background: var(--primary); color: white; padding: 0.6rem 1.2rem; text-decoration: none; border-radius: 4px; margin-top: 10px; }
-        footer { text-align: center; padding: 2rem; font-size: 0.9rem; color: #666; }
+        :root {
+            --primary: #6200ee;
+            --secondary: #03dac6;
+            --background: #f8f9fa;
+            --card: #ffffff;
+            --text: #212121;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        h2 { font-size: 1.2rem; margin-top: 0; color: var(--primary); }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        .btn-secondary { background: var(--secondary); color: #000; }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        #settle-results {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            background: #eee;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Chanshu</h1>
-    <p>Android Developer | Content Creator | AI Enthusiast</p>
-</header>
-
 <div class="container">
-    
-    <!-- About Section -->
+    <header>
+        <h1>SettleUp AI</h1>
+        <p>Smart debt simplification for your group</p>
+    </header>
+
+    <!-- Member Management -->
     <section class="card">
-        <h2>About Me</h2>
-        <p>I am a professional <strong>Android Developer</strong> based in Bengaluru, India. I specialize in building high-performance mobile applications using <strong>Jetpack Compose</strong> and <strong>Kotlin</strong>, following Clean Architecture principles.</p>
-        <p>When I'm not coding, I share my journey and technical insights on my YouTube channel, <strong>Chanshu The Coder</strong>.</p>
+        <h2>1. Add Members</h2>
+        <div class="input-group">
+            <input type="text" id="member-name" placeholder="Enter name (e.g., Chanshu)">
+            <button onclick="addMember()">Add</button>
+        </div>
+        <div id="member-list"></div>
     </section>
 
-    <!-- Key Projects -->
+    <!-- Expense Logging -->
     <section class="card">
-        <h2>Featured Projects</h2>
-        <h3>Exam Tantra</h3>
-        <p>A streamlined educational platform designed for seamless user experience. Built with a focus on speed and accessibility.</p>
-        <div>
-            <span class="tag">Kotlin</span>
-            <span class="tag">Jetpack Compose</span>
-            <span class="tag">MVVM</span>
+        <h2>2. Add Expense</h2>
+        <div class="input-group">
+            <select id="payer-select"><option value="">Who paid?</option></select>
+            <input type="number" id="amount" placeholder="Amount (₹)">
+        </div>
+        <input type="text" id="desc" placeholder="What for? (e.g., Dinner)" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+        <button class="btn-secondary" style="width: 100%;" onclick="addExpense()">Add Expense</button>
+    </section>
+
+    <!-- Results -->
+    <section class="card">
+        <h2>3. Settle Up</h2>
+        <button onclick="calculateSettlement()" style="width: 100%; margin-bottom: 15px;">Auto Calculate Best Path</button>
+        <div id="settle-results">
+            <strong>Optimized Transactions:</strong>
+            <ul id="transaction-list" style="padding-left: 20px; margin-top: 10px;"></ul>
         </div>
     </section>
-
-    <!-- Skills/Expertise -->
-    <section class="card">
-        <h2>Technical Expertise</h2>
-        <ul>
-            <li><strong>Mobile:</strong> Android SDK, Jetpack Compose, Kotlin Coroutines, Dagger Hilt.</li>
-            <li><strong>AI/ML:</strong> Edge deployment, TFLite, Model conversion (ONNX).</li>
-            <li><strong>Tools:</strong> Git, Firebase, Google Play Console, Android Studio.</li>
-        </ul>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="card" style="text-align: center;">
-        <h2>Let's Connect</h2>
-        <p>Follow my coding journey and stay updated with the latest in Android Dev.</p>
-        <a href="https://www.youtube.com/@ChanshuTheCoder" class="btn" target="_blank">Watch on YouTube</a>
-        <a href="https://github.com/chanshu" class="btn" style="background: #333;" target="_blank">View GitHub</a>
-    </section>
-
 </div>
 
-<footer>
-    <p>&copy; 2026 Chanshu. Built with passion in Bengaluru.</p>
-</footer>
+<script>
+    let members = [];
+    let expenses = [];
+
+    function addMember() {
+        const nameInput = document.getElementById('member-name');
+        const name = nameInput.value.trim();
+        if (name && !members.includes(name)) {
+            members.push(name);
+            updateUI();
+            nameInput.value = '';
+        }
+    }
+
+    function addExpense() {
+        const payer = document.getElementById('payer-select').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const desc = document.getElementById('desc').value;
+
+        if (payer && amount > 0) {
+            expenses.push({ payer, amount, desc });
+            updateUI();
+            document.getElementById('amount').value = '';
+            document.getElementById('desc').value = '';
+        }
+    }
+
+    function updateUI() {
+        // Update member display
+        const memberList = document.getElementById('member-list');
+        memberList.innerHTML = members.map(m => `<span class="tag">${m}</span>`).join(' ');
+
+        // Update dropdown
+        const select = document.getElementById('payer-select');
+        select.innerHTML = '<option value="">Who paid?</option>' + 
+            members.map(m => `<option value="${m}">${m}</option>`).join('');
+    }
+
+    function calculateSettlement() {
+        if (members.length < 2) return alert("Add at least 2 members.");
+        
+        let balances = {};
+        members.forEach(m => balances[m] = 0);
+
+        // Step 1: Calculate net balance for each person
+        expenses.forEach(exp => {
+            const share = exp.amount / members.length;
+            members.forEach(m => {
+                if (m === exp.payer) {
+                    balances[m] += (exp.amount - share);
+                } else {
+                    balances[m] -= share;
+                }
+            });
+        });
+
+        // Step 2: Settle Up Logic (Greedy Algorithm)
+        let debtors = [];
+        let creditors = [];
+
+        for (let name in balances) {
+            if (balances[name] < -0.01) debtors.push({ name, amount: Math.abs(balances[name]) });
+            else if (balances[name] > 0.01) creditors.push({ name, amount: balances[name] });
+        }
+
+        let transactions = [];
+        let i = 0, j = 0;
+
+        while (i < debtors.length && j < creditors.length) {
+            let amount = Math.min(debtors[i].amount, creditors[j].amount);
+            transactions.push(`<li><b>${debtors[i].name}</b> pays ₹${amount.toFixed(2)} to <b>${creditors[j].name}</b></li>`);
+            
+            debtors[i].amount -= amount;
+            creditors[j].amount -= amount;
+
+            if (debtors[i].amount < 0.01) i++;
+            if (creditors[j].amount < 0.01) j++;
+        }
+
+        const resultDiv = document.getElementById('settle-results');
+        const list = document.getElementById('transaction-list');
+        list.innerHTML = transactions.length > 0 ? transactions.join('') : "<li>Everyone is settled up!</li>";
+        resultDiv.style.display = 'block';
+    }
+</script>
 
 </body>
 </html>
